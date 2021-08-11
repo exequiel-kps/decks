@@ -59,3 +59,21 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  deploy:
+      name: deploy to cluster
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@master
+      - name: deploy to cluster
+        uses: ghostzero/kubectl@v1
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        with:
+          args: kubectl rollout restart deployment/deck-grafana -n kps
+      - name: verify deployment
+        uses: ghostzero/kubectl@v1
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBECTL_VERSION: "1.15"
+        with:
+          args: '"rollout status deployment/deck-grafana -n kps"'
