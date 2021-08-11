@@ -74,6 +74,5 @@ jobs:
         uses: ghostzero/kubectl@v1
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBECTL_VERSION: "1.15"
         with:
           args: '"rollout status deployment/deck-grafana -n kps"'
